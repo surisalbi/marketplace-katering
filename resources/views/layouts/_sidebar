@@ -1,0 +1,135 @@
+<div
+    id="sidebarOverlay"
+    class="fixed inset-0 bg-gray-900/50 z-40 hidden md:hidden transition-opacity duration-300"
+    onclick="toggleSidebar()"
+></div>
+<aside
+    id="sidebar"
+    class="w-64 bg-white border-r border-gray-100 flex flex-col justify-between absolute md:relative z-50 h-full transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none"
+>
+    <div>
+        <div
+            class="h-16 flex items-center justify-between px-6 border-b border-gray-100"
+        >
+            <div class="flex items-center gap-2">
+                <img
+                    src="{{ asset('assets/img/logo-hcma.png') }}"
+                    class="w-12"
+                    alt="logo"
+                />
+            </div>
+            <button
+                onclick="toggleSidebar()"
+                class="md:hidden text-gray-400 hover:text-gray-600 p-1"
+            >
+                <i class="las la-times text-xl"></i>
+            </button>
+        </div>
+
+        <nav class="p-4 space-y-6 overflow-y-auto max-h-[calc(100vh-140px)]">
+            {{-- ================= UTAMA ================= --}}
+            <div>
+                <ul class="space-y-1">
+                    <li>
+                        <a
+                            href="{{ route('dashboard') }}"
+                            class="flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-sm
+                           {{ request()->routeIs('dashboard') ? 'bg-emerald-50 text-emerald-600' : 'text-gray-600 hover:bg-gray-50' }}"
+                        >
+                            <i class="las la-home text-xl"></i>
+                            Dashboard
+                        </a>
+                    </li>
+
+                    {{-- Dropdown: Data Master --}}
+                    @php $masterRoutes = [ 'instansi.*', 'pejabat.*',
+                    'pegawai.*', ]; $masterActive =
+                    request()->routeIs(...$masterRoutes); @endphp
+                    <li
+                        x-data="{ open: {{
+                            $masterActive ? 'true' : 'false'
+                        }} }"
+                    >
+                        <button
+                            @click="open = !open"
+                            type="button"
+                            class="w-full flex items-center justify-between gap-3 px-3 py-2 rounded-lg font-medium text-sm
+                                {{
+                                $masterActive
+                                    ? 'bg-emerald-50 text-emerald-600'
+                                    : 'text-gray-600 hover:bg-gray-50'
+                            }}"
+                        >
+                            <span class="flex items-center gap-3">
+                                <i class="las la-database text-xl"></i>
+                                Data Master
+                            </span>
+                            <i
+                                class="las la-angle-down text-sm transition-transform duration-200"
+                                :class="open ? 'rotate-180' : ''"
+                            ></i>
+                        </button>
+                        <ul
+                            x-show="open"
+                            x-collapse
+                            class="mt-1 ml-9 space-y-1 border-l border-gray-100 pl-3"
+                        >
+                            <li>
+                                <a
+                                    href="{{ route('instansi.index') }}"
+                                    class="block px-3 py-1.5 rounded-md text-sm {{ request()->routeIs('instansi.*') ? 'text-emerald-600 font-medium' : 'text-gray-500 hover:text-gray-700' }}"
+                                >
+                                    Instansi
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="{{ route('pejabat.index') }}"
+                                    class="block px-3 py-1.5 rounded-md text-sm {{ request()->routeIs('pejabat.*') ? 'text-emerald-600 font-medium' : 'text-gray-500 hover:text-gray-700' }}"
+                                >
+                                    Pejabat
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="{{ route('pegawai.index') }}"
+                                    class="block px-3 py-1.5 rounded-md text-sm {{ request()->routeIs('pegawai.*') ? 'text-emerald-600 font-medium' : 'text-gray-500 hover:text-gray-700' }}"
+                                >
+                                    Pegawai
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a
+                            href="{{ route('surat-tugas.index') }}"
+                            class="flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-sm
+                           {{ request()->routeIs('surat-tugas.*') ? 'bg-emerald-50 text-emerald-600' : 'text-gray-600 hover:bg-gray-50' }}"
+                        >
+                            <i class="las la-file-alt text-xl"></i>
+                            Surat Tugas
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+    <div class="p-4 border-t border-gray-100 bg-white">
+        <div class="flex items-center gap-3 bg-gray-50 p-2 rounded-lg">
+            <img
+                src="https://ui-avatars.com/api/?name={{ auth()->user()->name }}&background=0c5fa8&color=fff"
+                alt="User"
+                class="w-7 h-7 rounded-full shadow-sm"
+            />
+            <div class="overflow-hidden">
+                <p class="text-sm font-semibold text-gray-700 truncate">
+                    {{ auth()->user()->name }}
+                </p>
+                <p class="text-xs text-gray-500 truncate">
+                    {{ auth()->user()->role }}
+                </p>
+            </div>
+        </div>
+    </div>
+</aside>
